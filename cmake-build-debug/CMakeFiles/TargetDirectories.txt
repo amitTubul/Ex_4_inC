@@ -1,0 +1,3 @@
+/home/amitim/CLionProjects/EX_4/cmake-build-debug/CMakeFiles/EX_4.dir
+/home/amitim/CLionProjects/EX_4/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/amitim/CLionProjects/EX_4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
