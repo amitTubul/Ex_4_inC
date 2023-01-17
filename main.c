@@ -8,11 +8,27 @@ int main() {
     pnode *head = malloc(sizeof(pnode));
     *head = NULL;
     char c;
-    scanf("%c",&c);
-    if(c=='A'){
-        build_graph_cmd(head);
-        printGraph_cmd(*head);
-    }
+    while(scanf("%c",&c)!=EOF)
+    {
+        switch(c) {
+            case ('A'):
+                build_graph_cmd(head);
+                printGraph_cmd(*head);
+                break;
 
+            case ('B'):
+                insert_node_cmd(head);
+                printGraph_cmd(*head);
+                break;
+
+
+//            case ('C'):
+//                break;
+//            case ('D'):
+//                break;
+            default:
+                continue;
+        }
+    }
     return 0;
 }
