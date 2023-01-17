@@ -2,7 +2,8 @@ CC = gcc
 AR=ar
 FLAGS = -Wall -fPIC -g
 
-all: main graphs
+all: graph graphs
+
 graph.o: graph.c graph.h
 	$(CC) $(FLAGS) -c graph.c
 
@@ -14,10 +15,10 @@ graphs: graph.a
 graph.a: graph.o main.o
 	$(AR) -rcs  graph.a graph.o main.o
 
-main: main.o graph.a
-	$(CC) $(FLAGS) -o main main.o graph.a
+graph: main.o graph.o
+	$(CC) $(FLAGS) -o graph main.o graph.o
 
 clean:
-	rm -f graph.a main graphs *.o
+	rm -f graph.a graph graphs *.o
 
-.PHONY: clean all main graphs
+.PHONY: clean all graph graphs
