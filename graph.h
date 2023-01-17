@@ -11,6 +11,7 @@ typedef struct edge_ {
 
 
 typedef struct GRAPH_NODE_ {
+    int distance ;
     int node_num;
     pedge edges;
     struct GRAPH_NODE_ *next;

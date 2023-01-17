@@ -20,15 +20,21 @@ int main() {
                 insert_node_cmd(head);
                 printGraph_cmd(*head);
                 break;
-
-
-//            case ('C'):
-//                break;
-//            case ('D'):
-//                break;
+            case ('D'):
+                delete_node_cmd(head);
+                printGraph_cmd(*head);
+                break;
+            case ('S'):
+                shortsPath_cmd(*head);
+                break;
+            case ('T'):
+                TSP_cmd(*head);
+                break;
             default:
                 continue;
         }
     }
+    deleteGraph_cmd(head);
+    free(head);
     return 0;
 }

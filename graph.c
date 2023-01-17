@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "graph.h"
+#include <limits.h>
+#include <stdbool.h>
 
 void printGraph_cmd(pnode head)
 {
@@ -163,6 +165,162 @@ void insert_node_cmd(pnode *head){
     temp_node->edges = edges;
 }
 
+void delete_node_cmd(pnode *head){
+    int number;
+    scanf("%d ", &number);
+    pnode temp_node = *head;
+    pnode prev_node =NULL;
+    while (temp_node->node_num != number ) {
+        prev_node=temp_node;
+        temp_node = temp_node->next;
+    }
 
+    pedge current_edge = temp_node->edges;
+    while (current_edge != NULL) {
+        pedge next_edge = current_edge->next;
+        free(current_edge);
+        current_edge = next_edge;
+    }
+    temp_node->edges=NULL;
+    pnode tmp_node = *head;
+    while (tmp_node != NULL ) {
+        current_edge = tmp_node->edges;
+        while (current_edge!=NULL) {
+            if(current_edge->endpoint->node_num!=number){
+                current_edge=current_edge->next;
+                continue;
+            }
+            pedge next_edge = current_edge->next;
+            free(current_edge);
+            current_edge = next_edge;
+        }
+        tmp_node = tmp_node->next;
+    }
+
+    if(temp_node==*head){
+        *head=temp_node->next;
+        free(temp_node);
+    }
+    else {
+        pnode next_node = temp_node->next;
+        free(temp_node);
+        prev_node->next=next_node;
+    }
+}
+
+bool is_visited(pnode node, pnode visited_nodes) {
+    pnode current = visited_nodes;
+    while(current) {
+        if(current->node_num == node->node_num) {
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+// Returns the node with the smallest distance in the unvisited set
+pnode get_smallest_distance_node(pnode nodes, pnode visited_nodes) {
+    pnode smallest_node = NULL;
+    int smallest_distance = INT_MAX;
+    pnode current_node = nodes;
+    while (current_node) {
+        if (!is_visited(current_node, visited_nodes) && current_node->distance <= smallest_distance) {
+            smallest_node = current_node;
+            smallest_distance = current_node->distance;
+        }
+        current_node = current_node->next;
+    }
+    return smallest_node;
+}
+
+void shortsPath_cmd_local(pnode head,int a,int b){
+    if (!head) return;
+    pnode visited_nodes = NULL; //keep track of visited node without changing the weight
+
+    // Initialize distances for all nodes
+    pnode current_node = head;
+    while (current_node) {
+        if (current_node->node_num == a) {
+            current_node->distance = 0;
+        } else {
+            current_node->distance = INT_MAX;
+        }
+        current_node = current_node->next;
+    }
+
+    // Run Dijkstra's algorithm
+    while (true) {
+        pnode smallest_node = get_smallest_distance_node(head, visited_nodes);
+        if (!smallest_node) break; // All nodes have been visited
+
+        //Mark node as visited by adding to visited_nodes list
+        pnode new_visited = (pnode)malloc(sizeof(node));
+        new_visited->node_num = smallest_node->node_num;
+        new_visited->next = visited_nodes;
+        visited_nodes = new_visited;
+
+        // Update distances of neighboring nodes
+        pedge current_edge = smallest_node->edges;
+        while (current_edge) {
+            pnode endpoint = current_edge->endpoint;
+            if (!is_visited(endpoint, visited_nodes) && smallest_node->distance + current_edge->weight < endpoint->distance) {
+                endpoint->distance = smallest_node->distance + current_edge->weight;
+            }
+            current_edge = current_edge->next;
+        }
+    }
+
+    // Print shortest distance
+    pnode end = head;
+    while (end && end->node_num != b) end = end->next;
+    if (!end) return; // Ending node not found
+    printf("Shortest distance from node %d to node %d: %d\n", a, b, end->distance);
+
+    while(visited_nodes){
+        pnode curr=visited_nodes->next;
+        free(visited_nodes);
+        visited_nodes=curr;
+    }
+}
+void shortsPath_cmd(pnode head){
+    int a;
+    int b;
+    scanf("%d ",&a);
+    scanf("%d ",&b);
+
+    shortsPath_cmd_local(head,a,b);
+}
+
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+void permute(int* arr, int start, int end ,pnode head) {
+    if (start == end) {
+            shortsPath_cmd_local(head,arr[0],arr[end]);
+    } else {
+        for (int i = start; i <= end; i++) {
+            swap(&arr[start], &arr[i]);
+            permute(arr, start + 1, end,head);
+            swap(&arr[start], &arr[i]);
+        }
+    }
+}
+
+void TSP_cmd(pnode head){
+    int size;
+    int number;
+    scanf("%d ",&size);
+
+    int *arr= (int*)malloc(size*sizeof (int));
+    for (int i = 0; i < size; i++) {
+        scanf("%d ",&number);
+        arr[i]=number;
+    }
+    permute(arr, 0, size - 1,head);
+    free(arr);
+}
 
 
