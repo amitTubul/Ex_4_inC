@@ -20,5 +20,4 @@ main: main.o graph.a
 clean:
 	rm -f graph.a main graphs *.o
 
-
 .PHONY: clean all main graphs

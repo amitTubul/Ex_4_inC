@@ -24,7 +24,6 @@ void printGraph_cmd(pnode head)
 }
 void deleteGraph_cmd(pnode* head) {
     if (*head == NULL) {
-        printf("Graph is already empty\n");
         return;
     }
     pnode current_node = *head;
@@ -234,8 +233,8 @@ pnode get_smallest_distance_node(pnode nodes, pnode visited_nodes) {
     return smallest_node;
 }
 
-void shortsPath_cmd_local(pnode head,int a,int b){
-    if (!head) return;
+int shortsPath_cmd_local(pnode head,int a,int b){
+    if (!head) return-1;
     pnode visited_nodes = NULL; //keep track of visited node without changing the weight
 
     // Initialize distances for all nodes
@@ -274,22 +273,24 @@ void shortsPath_cmd_local(pnode head,int a,int b){
     // Print shortest distance
     pnode end = head;
     while (end && end->node_num != b) end = end->next;
-    if (!end) return; // Ending node not found
-    printf("Shortest distance from node %d to node %d: %d\n", a, b, end->distance);
+    if (!end) return-1; // Ending node not found
 
     while(visited_nodes){
         pnode curr=visited_nodes->next;
         free(visited_nodes);
         visited_nodes=curr;
     }
+    return end->distance;
 }
+
 void shortsPath_cmd(pnode head){
     int a;
     int b;
     scanf("%d ",&a);
     scanf("%d ",&b);
 
-    shortsPath_cmd_local(head,a,b);
+    int shortest=shortsPath_cmd_local(head,a,b);
+    printf("Dijsktra shortest path: %d \n", shortest);
 }
 
 void swap(int* a, int* b) {
@@ -297,13 +298,23 @@ void swap(int* a, int* b) {
     *a = *b;
     *b = temp;
 }
-void permute(int* arr, int start, int end ,pnode head) {
+void permute(int* arr, int start, int end ,int *ptr ,pnode head) {
     if (start == end) {
-            shortsPath_cmd_local(head,arr[0],arr[end]);
+        int count=0;
+        int curr;
+        for (int i = 0; i < end; i++) {
+            curr=shortsPath_cmd_local(head,arr[i],arr[i+1]);
+            if (curr==INT_MAX){
+                count=INT_MAX;
+                break;
+            }
+            count+=curr;
+        }
+        if(count<*ptr && count>=0) *ptr=count;
     } else {
         for (int i = start; i <= end; i++) {
             swap(&arr[start], &arr[i]);
-            permute(arr, start + 1, end,head);
+            permute(arr, start + 1, end,ptr,head);
             swap(&arr[start], &arr[i]);
         }
     }
@@ -319,8 +330,14 @@ void TSP_cmd(pnode head){
         scanf("%d ",&number);
         arr[i]=number;
     }
-    permute(arr, 0, size - 1,head);
+    int shortest=INT_MAX;
+    int *ptr=&shortest;
+    permute(arr, 0, size - 1,ptr,head);
     free(arr);
+    if(*ptr==INT_MAX){
+        *ptr=-1;
+    }
+    printf("TSP shortest path: %d \n",*ptr);
 }
 
 

@@ -13,16 +13,12 @@ int main() {
         switch(c) {
             case ('A'):
                 build_graph_cmd(head);
-                printGraph_cmd(*head);
                 break;
-
             case ('B'):
                 insert_node_cmd(head);
-                printGraph_cmd(*head);
                 break;
             case ('D'):
                 delete_node_cmd(head);
-                printGraph_cmd(*head);
                 break;
             case ('S'):
                 shortsPath_cmd(*head);
