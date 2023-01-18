@@ -165,6 +165,7 @@ void insert_node_cmd(pnode *head){
 }
 
 void delete_node_cmd(pnode *head){
+    printGraph_cmd(*head);
     int number;
     scanf("%d ", &number);
     pnode temp_node = *head;
@@ -181,20 +182,31 @@ void delete_node_cmd(pnode *head){
         current_edge = next_edge;
     }
     temp_node->edges=NULL;
+
     pnode tmp_node = *head;
+    pedge prev_edge ;
     while (tmp_node != NULL ) {
         current_edge = tmp_node->edges;
         while (current_edge!=NULL) {
-            if(current_edge->endpoint->node_num!=number){
-                current_edge=current_edge->next;
+            if (current_edge->endpoint->node_num != number) {
+                prev_edge = current_edge;
+                current_edge = current_edge->next;
                 continue;
             }
             pedge next_edge = current_edge->next;
-            free(current_edge);
-            current_edge = next_edge;
+            if (current_edge == tmp_node->edges) {
+                tmp_node->edges = next_edge;
+                free(current_edge);
+                break;
+            } else {
+                prev_edge->next = next_edge;
+                free(current_edge);
+                break;
+            }
         }
         tmp_node = tmp_node->next;
     }
+
 
     if(temp_node==*head){
         *head=temp_node->next;
@@ -205,6 +217,7 @@ void delete_node_cmd(pnode *head){
         free(temp_node);
         prev_node->next=next_node;
     }
+    printGraph_cmd(*head);
 }
 
 bool is_visited(pnode node, pnode visited_nodes) {
