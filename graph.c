@@ -165,7 +165,6 @@ void insert_node_cmd(pnode *head){
 }
 
 void delete_node_cmd(pnode *head){
-    printGraph_cmd(*head);
     int number;
     scanf("%d ", &number);
     pnode temp_node = *head;
@@ -217,7 +216,6 @@ void delete_node_cmd(pnode *head){
         free(temp_node);
         prev_node->next=next_node;
     }
-    printGraph_cmd(*head);
 }
 
 bool is_visited(pnode node, pnode visited_nodes) {
